@@ -8,7 +8,7 @@ Featues:
 * Easy to configure.
 * Integration with memcached for high performance.
 * Rapid deployment within a minute.
-* Multiple moutpoint support!
+* Multiple mountpoint support!
 * Easy to extend.
 * Different response types: JSON or XML.
 * Mount fallback support!
