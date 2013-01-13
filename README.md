@@ -22,7 +22,7 @@ It allows you to:
 
 ## Install
 It's never been so easy if you're using composer.
-Just unpack it to your api's root directory, and intall the dependencies:
+Just unpack it to your api's root directory, and install the dependencies:
 ```php composer.phar install```
 
 ## Configuration
