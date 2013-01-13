@@ -31,7 +31,7 @@ Well, it's pretty simple, just edit the $config array:
 ```
 //IceCast API Config
 $config = array(
-  'icecast_server_hostname'                        => 'radio.example.com', //icecast2 server hostname or IP
+  'icecast_server_hostname'			   => 'radio.example.com', //icecast2 server hostname or IP
 	'icecast_server_port'			   => 80, 
 	'icecast_admin_username' 		   => 'admin', //admin username
 	'icecast_admin_password' 		   => 'password', //admin password
