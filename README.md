@@ -54,12 +54,12 @@ $config = array(
 ```
 ## Mount Fallback map
 I think every popular radiostation hosts a live broadcasts. But with all it's popularity, it comes with some problems, if you're using default Icecast2 fallback mechanic.
-When live source hits the air, listeners is being automatically moved to its mountpoint, leaving the nonstop mount completely empty.
+When live source hits the air, listeners are being automatically moved to its mountpoint, leaving the old nonstop mount completely empty.
 In order to continue providing actual data to your API clients you need to detect when live broadcast is going up and alter your data "on-the-fly".
 
-To bring this thing to work you need to configure Mount Fallback map according to your radio archeticture.
+To bring this thing to work you need to configure Mount Fallback map according to your station's archeticture.
 
-So, for example, if you have live mount called "live" with following configuration in icecast.xml:
+So, for example, if you have live(for DJs) mount called "live" with following configuration in icecast.xml:
 ```
 <mount>
   <mount-name>/live</mount-name>
