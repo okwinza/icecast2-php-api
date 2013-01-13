@@ -43,10 +43,10 @@ $config = array(
 	                                                    'house.live	  => 'house.nonstop'),
 	'playlist_logfile' 		           => '/var/log/icecast2/playlist.log', // must be available for reading
 	'use_memcached' 		           => true,                             // using of the memcached: true | false
-	'memcached' 			           => array(				'server'     => '127.0.0.1'
-											'port'       => 11211, 
-											'lifetime'   => 10, // lifetime of the cache in seconds
-											'compressed' => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
+	'memcached' 			           => array('server'     => '127.0.0.1'
+	                                                    'port'       => 11211, 
+	                                                    'lifetime'   => 10, // lifetime of the cache in seconds
+ 	                                                    'compressed' => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
 	'max_amount_of_history'			   => '20',      // max limit of requested items of playback history
 	'xmlrootnode'			           => 'response' // Root node name for the response using XML.
 );
