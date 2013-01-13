@@ -31,24 +31,24 @@ Well, it's pretty simple, just edit the $config array:
 ```
 //IceCast API Config
 $config = array(
-  'icecast_server_hostname' 		 => 'radio.example.com', //icecast2 server hostname or IP
-	'icecast_server_port'			     => 80, 
+  'icecast_server_hostname' 		           => 'radio.example.com', //icecast2 server hostname or IP
+	'icecast_server_port'			   => 80, 
 	'icecast_admin_username' 		   => 'admin', //admin username
 	'icecast_admin_password' 		   => 'password', //admin password
 	//If you have an event based mounts(e.g. for live broadcasting), 
 	//you should configure fallback map below according to your icecast2 config file.
 	//Read the docs for more info.
-	'icecast_mount_fallback_map'   => array('live'        => 'nonstop', // from => to
-									                        'trance.live' => 'trance.nonstop',
-									                        'house.live'	=> 'house.nonstop'),
-	'playlist_logfile' 		         => '/var/log/icecast2/playlist.log', // must be available for reading
+	'icecast_mount_fallback_map'               => array('live'        => 'nonstop',     // from => to
+	                                                    'trance.live' => 'trance.nonstop',
+	                                                    'house.live	  => 'house.nonstop'),
+	'playlist_logfile' 		           => '/var/log/icecast2/playlist.log', // must be available for reading
 	'use_memcached' 		           => true,                             // using of the memcached: true | false
-	'memcached' 			             => array('server' 		=> '127.0.0.1', 
-									                       'port' 		  => 11211, 
-									                       'lifetime' 	=> 10, // lifetime of the cache in seconds
-									                       'compressed' => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
-	'max_amount_of_history'	       => '20', // max limit of requested items of playback history
-	'xmlrootnode'			             => 'response' // Root node name for the response using XML.
+	'memcached' 			           => array('server'     => '127.0.0.1', 
+							    'port'       => 11211, 
+							    'lifetime'   => 10, // lifetime of the cache in seconds
+							    'compressed' => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
+	'max_amount_of_history'	                   => '20',      // max limit of requested items of playback history
+	'xmlrootnode'			           => 'response' // Root node name for the response using XML.
 );
 ```
 ## Mount Fallback map
@@ -71,7 +71,7 @@ So, for example, if you have live mount called "live" with following configurati
 ```
 Just bring the `icecast_mount_fallback_map` to the following state:
 ```
-'icecast_mount_fallback_map'   => array('live'        => 'myradio.nonstop'),
+'icecast_mount_fallback_map'   => array('live' => 'myradio.nonstop'),
 ```
 That' all. You're good to go now.
 
@@ -82,13 +82,13 @@ online gaming station called "Tort.FM". It was developed for that project, event
 
 Here you go:
 ### Current listeners from tort.fm main mountpoint, xml response:
-`http://dev.tort.fm/listeners/tort.fm/xml/`
+<http://dev.tort.fm/listeners/tort.fm/xml/>
 ### Current track from tort.fm main mountpoint, json response:
-`http://dev.tort.fm/track/tort.fm/json/`
+<http://dev.tort.fm/track/tort.fm/json/>
 ### Last 7 tracks from our trance channel, xml response:
-`http://dev.tort.fm/history/tort.fm/7/xml/`
+<http://dev.tort.fm/history/tort.fm/7/xml/>
 ### Total listeners, xml response:
-`http://dev.tort.fm/totalListeners/xml/`
+<http://dev.tort.fm/totalListeners/xml/>
 
 ## Extend
 If you want to add your custom functionality, just create additional methods in icecast_api.php file using this template:
