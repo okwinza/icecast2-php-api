@@ -23,6 +23,7 @@ It allows you to:
 ## Install
 It's never been so easy if you're using composer.
 Just unpack it to your api's root directory, and install the dependencies:
+
 ```php composer.phar install```
 
 ## Configuration
@@ -76,7 +77,7 @@ Just bring the `icecast_mount_fallback_map` to the following state:
 That' all. You're good to go now.
 
 ## Demos
-So, the best demos is the working project, huh?
+So, the best demo is the working project, huh?
 This API is fully integrated and succesfuly working at the most popular russian 
 online gaming station called "Tort.FM". It was developed for that project, eventually.
 
