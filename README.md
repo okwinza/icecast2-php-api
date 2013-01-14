@@ -80,7 +80,9 @@ That' all. Now your API service will provide data from the live mount when it's 
 Thanks to built-in memcached support your new api service has, quite literally,  unrival performance.
 
 Here are some tests result:
+
 Query: `ab -n 10000 -c 100 http://dev.tort.fm:81/history/tort.fm/7/xml/`
+
 ### Memcached ON
 ```
 	Server Software:        nginx/0.7.67
@@ -126,6 +128,7 @@ CPU	Intel Quad Xeon E3-1230 4 x 3.20 Ghz
 RAM	12 GB
 Web-server: nginx 0.7 with php5-fpm
 ```
+617 RPS against 269.
 Not bad, huh? Whatcha think?
 
 
