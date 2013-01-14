@@ -155,7 +155,7 @@ class IcecastApi {
 					$result_array[$i]['track'] 	 = $this->filter_string($line_parsed[3]); // getting rid of special chars in the title
 					$result_array[$i]['timestamp'] = strtotime($line_parsed[0]); 
 					$i++;
-				}
+				}else break;
 			}
 		}
 		return $result_array;
