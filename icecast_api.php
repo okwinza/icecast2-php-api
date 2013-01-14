@@ -138,9 +138,9 @@ class IcecastApi {
 		extract($args); // $mount, $amount
 		$amount = ($amount > $this->config['max_amount_of_history']) ? $this->config['max_amount_of_history'] : $amount;
 		
-		$grab_lines = intval($amount * pow(count($this->listMounts()),1.2)); // amount of rows to grab
+		$grab_lines = intval($amount * pow(count($this->listMounts()),1.2)); // amount of lines to grab
 		
-		$last_lines = $this->read_backward_line($this->config['playlist_logfile'], $grab_lines);
+		$last_lines = $this->GetLastLinesFromFile($this->config['playlist_logfile'], $grab_lines);
 		$last_lines = explode("\n",$last_lines);
 		array_pop($last_lines); // deleting last empty line
 		$last_lines = array_reverse($last_lines); // desc. order
@@ -198,14 +198,14 @@ class IcecastApi {
 		return curl_exec($process);		
 	}
 	
-	private function array_to_xml($response_array, $xml=null){
+	private function array_to_xml(array $array, $xml=null){
 
         if ($xml == null)
         {
             $xml = simplexml_load_string("<?xml version='1.0'?><". $this->config['xmlrootnode'] ."/>");
         }
   
-        foreach($response_array as $key => $value)
+        foreach($array as $key => $value)
         {
             if (is_numeric($key))
             {
@@ -226,11 +226,11 @@ class IcecastApi {
         return $xml->asXML();
     }
 	
-	private function array_to_json($response_array){
-		return json_encode($response_array);
+	private function array_to_json(array $array){
+		return json_encode($array);
 	}
 	
-	private function read_backward_line($filename, $lines)
+	private function GetLastLinesFromFile($filename, $lines)
 	{
 		$offset = -1;
 		$c = '';
