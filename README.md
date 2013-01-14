@@ -74,7 +74,60 @@ Just bring the `icecast_mount_fallback_map` to the following state:
 ```
 'icecast_mount_fallback_map'   => array('live' => 'myradio.nonstop'),
 ```
-That' all. You're good to go now.
+That' all. Now your API service will provide data from the live mount when it's active or from the one it's associated with, if it's down.
+
+## Performance
+Thanks to built-in memcached support your new api service has, quite literally,  unrival performance.
+
+Here are some tests result:
+Query: `ab -n 10000 -c 100 http://dev.tort.fm:81/history/tort.fm/7/xml/`
+### Memcached ON
+```
+	Server Software:        nginx/0.7.67
+	
+	Document Path:          /history/tort.fm/7/xml/
+	Document Length:        697 bytes
+	
+	Concurrency Level:      100
+	Time taken for tests:   16.196 seconds
+	Complete requests:      10000
+	Failed requests:        0
+	Write errors:           0
+	Total transferred:      8620000 bytes
+	HTML transferred:       6970000 bytes
+	Requests per second:    617.44 [#/sec] (mean)
+	Time per request:       161.958 [ms] (mean)
+	Time per request:       1.620 [ms] (mean, across all concurrent requests)
+	Transfer rate:          519.76 [Kbytes/sec] received
+```
+### Memcached OFF
+```
+	Server Software:        nginx/0.7.67
+	
+	Document Path:          /history/tort.fm/7/xml/
+	Document Length:        682 bytes
+	
+	Concurrency Level:      100
+	Time taken for tests:   37.076 seconds
+	Complete requests:      10000
+	Failed requests:        0
+	Write errors:           0
+	Total transferred:      8470000 bytes
+	HTML transferred:       6820000 bytes
+	Requests per second:    269.72 [#/sec] (mean)
+	Time per request:       370.757 [ms] (mean)
+	Time per request:       3.708 [ms] (mean, across all concurrent requests)
+	Transfer rate:          223.10 [Kbytes/sec] received
+```
+
+All tests were made on the following server:
+```
+CPU	Intel Quad Xeon E3-1230 4 x 3.20 Ghz
+RAM	12 GB
+Web-server: nginx 0.7 with php5-fpm
+```
+Not bad, huh? Whatcha think?
+
 
 ## Demos
 So, the best demo is the working project, huh?
