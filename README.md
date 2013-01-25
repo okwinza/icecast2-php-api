@@ -145,7 +145,7 @@ Here you go:
 ### Last 7 tracks from our trance channel, xml response:
 <http://api.tort.fm/radio/tort.fm/history/7/xml/>
 ### Total listeners, xml response:
-<http://api.tort.fm/radio/totalListeners/xml/>
+<http://api.tort.fm/radio/TotalListeners/xml/>
 
 ## Extend
 If you want to add your custom functionality, just create additional methods in icecast_api.php file using this template:
