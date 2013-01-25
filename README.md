@@ -139,7 +139,7 @@ online gaming station called "Tort.FM". It was developed for that project, event
 
 Here you go:
 ### Current listeners from tort.fm main mountpoint, xml response:
-<http://api.tort.fm/tort.fm/listeners/xml/>
+<http://api.tort.fm/radio/tort.fm/listeners/xml/>
 ### Current track from tort.fm main mountpoint, json response:
 <http://api.tort.fm/radio/tort.fm/track/json/>
 ### Last 7 tracks from our trance channel, xml response:
