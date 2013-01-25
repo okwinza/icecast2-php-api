@@ -59,7 +59,7 @@ if(empty($active_mounts)){
 //Number of listeners of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
+$app->get('/:mount/listeners/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
 	
 	$app->response()->header("Content-Type", "application/".$responseType);	//setting appropriate headers
 	echo $icecastApi->Request('GetListeners',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -70,7 +70,7 @@ $app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) 
 //Current track of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
+$app->get('/:mount/track/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetTrack',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -82,7 +82,7 @@ $app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use 
 //(string) :mount 	     => one of the existing mounts
 //(int)    :amount 		 => amount of tracks to retrieve
 //(string) :responseType => response type(json|xml)
-$app->get('/history/:mount/:amount/:responseType(/)', function ($mount,$amount,$responseType) use (&$icecastApi, &$app) {
+$app->get('/:mount/history/:amount/:responseType(/)', function ($mount,$amount,$responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetHistory',array('mount' => $mount , 'amount' => $amount))->Response($responseType); //returning response to the client
