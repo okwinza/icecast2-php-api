@@ -39,6 +39,8 @@ $app = new \Slim\Slim();
 //initiate IcecastApi model
 $icecastApi = new icecastApi($config);
 
+//Allow crossdomain requests
+$app->response()->header("Access-Control-Allow-Origin", "*");
 
 //No active mounts -- nothing to do here, shutting down...
 $active_mounts = $icecastApi->listMounts(true);
@@ -57,7 +59,7 @@ if(empty($active_mounts)){
 //Number of listeners of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
+$app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
 	
 	$app->response()->header("Content-Type", "application/".$responseType);	//setting appropriate headers
 	echo $icecastApi->Request('GetListeners',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -68,7 +70,7 @@ $app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) 
 //Current track of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
+$app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetTrack',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -80,7 +82,7 @@ $app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use 
 //(string) :mount 	     => one of the existing mounts
 //(int)    :amount 		 => amount of tracks to retrieve
 //(string) :responseType => response type(json|xml)
-$app->get('/history/:mount/:amount/:responseType(/)', function ($mount,$amount,$responseType) use ($icecastApi, $app) {
+$app->get('/history/:mount/:amount/:responseType(/)', function ($mount,$amount,$responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetHistory',array('mount' => $mount , 'amount' => $amount))->Response($responseType); //returning response to the client
@@ -90,7 +92,7 @@ $app->get('/history/:mount/:amount/:responseType(/)', function ($mount,$amount,$
 
 //Total listeners
 //(string) :responseType => response type(json|xml)
-$app->get('/totalListeners/:responseType(/)', function ($responseType) use ($icecastApi, $app) {
+$app->get('/totalListeners/:responseType(/)', function ($responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetTotalListeners',array())->Response($responseType); //returning response to the client
@@ -102,7 +104,7 @@ $app->get('/totalListeners/:responseType(/)', function ($responseType) use ($ice
 
 //Custom method template
 /* 
-$app->get('/customMethod/:responseType(/)', function ($responseType) use ($icecastApi, $app) {
+$app->get('/customMethod/:responseType(/)', function ($responseType) use (&$icecastApi, &$app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType);
 	echo $icecastApi->Request('YourCustomMethod',array())->Response($responseType);
@@ -111,7 +113,7 @@ $app->get('/customMethod/:responseType(/)', function ($responseType) use ($iceca
 */
 
 
-$app->notFound(function () use ($app) {
+$app->notFound(function () use (&$app) {
 
     // build response
     $response = array(
