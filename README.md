@@ -32,25 +32,48 @@ Well, it's pretty simple, just edit the $config array:
 ```
 //IceCast API Config
 $config = array(
-  'icecast_server_hostname'			   => 'radio.example.com', //icecast2 server hostname or IP
-	'icecast_server_port'			   => 80, 
-	'icecast_admin_username' 		   => 'admin', //admin username
-	'icecast_admin_password' 		   => 'password', //admin password
+	'icecast_server_hostname' 		 => 'radio.example.com', //icecast2 server hostname or IP
+	'icecast_server_port'			 => 80, 
+	'icecast_admin_username' 		 => 'admin', //admin username
+	'icecast_admin_password' 	     => 'hackme', //admin password
+	
+	
+	//unused
+	'icecast_listener_auth_header_title'			=> 'icecast-auth-user',
+	'icecast_listener_auth_header_value'			=> '1',
+	'icecast_listener_auth_header_reject_reason' 	=> 'Rejected',
+	
 	//If you have an event based mounts(e.g. for live broadcasting), 
 	//you should configure fallback map below according to your icecast2 config file.
 	//Read the docs for more info.
-	'icecast_mount_fallback_map'               => array('live'        => 'nonstop',     // from => to
-	                                                    'trance.live' => 'trance.nonstop',
-	                                                    'house.live	  => 'house.nonstop'),
-	'playlist_logfile' 		           => '/var/log/icecast2/playlist.log', // must be available for reading
-	'use_memcached' 		           => true,                             // Enable memcached support: true || false
-	'memcached' 			           => array('server'     => '127.0.0.1'
-	                                                    'port'       => 11211, 
-	                                                    'lifetime'   => 10, // Cache lifetime in seconds
- 	                                                    'compressed' => 0), // compress data stored with memcached? 1 || 0. Requires zlib.
-	'max_amount_of_history'			   => '20',      // max limit of requested items of playback history
-	'xmlrootnode'			           => 'response' // Root node name for the response using XML.
+	'icecast_mount_fallback_map' => array('live' => 'nonstop',  // from => to
+									  'trance'  => 'trance.nonstop',
+									  'house'	=> 'house.nonstop'),
+									  
+	'playlist_logfile' 		 => '/var/log/icecast2/playlist.log', // must be available for reading
+	
+	'use_memcached' 		 => false, // Enable memcached support: true | false
+	'use_db'				 => false, // Enable db support: true | false  (unused atm)
+
+	'memcached' 			 => array('host' 		=> '127.0.0.1', 
+									  'port' 		=> 11211, 
+									  'lifetime' 	=> 5, // lifetime of the cache in seconds
+									  'compressed'  => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
+									  
+	'db'					=> array('host'			=> '127.0.0.1',
+									 'port'			=> 3306,
+									 'user'			=> 'dbuser',
+									 'password'		=> 'dbpassword'),			
+	'max_amount_of_history'	 => '20', // max limit of requested items of playback history
+	'xmlrootnode'			 => 'response', // Root node name for the response using XML.
+	'album_art_folder'		 => getcwd().'/dev.tort.fm/storage/albums/',   // cache folder for albums art images. With trailing slash. Normally, u shouldn't change this.
+	'gracenote'				 => array('clientID' 	=> '',
+									  'clientTag' 	=> '',
+									  'userID' 		=> '',
+								),
+	'default_storage_folder' => getcwd().'/storage/default/', // default static folder. Normally, u shouldn't change this.
 );
+
 ```
 ## Mount Fallback map
 I think every popular radiostation hosts a live broadcasts. But with all it's popularity, it comes with some problems, if you're using default Icecast2 fallback mechanic.
@@ -87,39 +110,40 @@ Query: `ab -n 10000 -c 100 http://api.example.com:81/history/tort.fm/7/xml/`
 ```
 	Server Software:        nginx/0.7.67
 	
-	Document Path:          /history/tort.fm/7/xml/
+	Document Path:          /live/track/xml/
 	Document Length:        697 bytes
 	
 	Concurrency Level:      100
-	Time taken for tests:   16.196 seconds
-	Complete requests:      10000
+	Time taken for tests:   0.785 seconds
+	Complete requests:      1000
 	Failed requests:        0
 	Write errors:           0
-	Total transferred:      8620000 bytes
-	HTML transferred:       6970000 bytes
-	Requests per second:    617.44 [#/sec] (mean)
-	Time per request:       161.958 [ms] (mean)
-	Time per request:       1.620 [ms] (mean, across all concurrent requests)
-	Transfer rate:          519.76 [Kbytes/sec] received
+	Total transferred:      463000 bytes
+	HTML transferred:       277000 bytes
+	Requests per second:    1274.19 [#/sec] (mean)
+	Time per request:       78.481 [ms] (mean)
+	Time per request:       0.785 [ms] (mean, across all concurrent requests)
+	Transfer rate:          576.12 [Kbytes/sec] received
 ```
 ### Memcached OFF
 ```
 	Server Software:        nginx/0.7.67
 	
-	Document Path:          /history/tort.fm/7/xml/
+	Document Path:          /live/track/xml/
 	Document Length:        682 bytes
 	
+
 	Concurrency Level:      100
-	Time taken for tests:   37.076 seconds
-	Complete requests:      10000
+	Time taken for tests:   1.040 seconds
+	Complete requests:      1000
 	Failed requests:        0
 	Write errors:           0
-	Total transferred:      8470000 bytes
-	HTML transferred:       6820000 bytes
-	Requests per second:    269.72 [#/sec] (mean)
-	Time per request:       370.757 [ms] (mean)
-	Time per request:       3.708 [ms] (mean, across all concurrent requests)
-	Transfer rate:          223.10 [Kbytes/sec] received
+	Total transferred:      439000 bytes
+	HTML transferred:       253000 bytes
+	Requests per second:    961.51 [#/sec] (mean)
+	Time per request:       104.003 [ms] (mean)
+	Time per request:       1.040 [ms] (mean, across all concurrent requests)
+	Transfer rate:          412.21 [Kbytes/sec] received
 ```
 
 All tests were made on the following server:
@@ -128,12 +152,12 @@ CPU	Intel Quad Xeon E3-1230 4 x 3.20 Ghz
 RAM	12 GB
 Web-server: nginx 0.7 with php5-fpm
 ```
-617 RPS against 269.
+1274 RPS against 961.
 Not bad, huh? Whatcha think?
 
 
 ## Demos
-So, the best demo is the working project, huh?
+So, the best demo is the working project, right?
 This API is fully integrated and succesfuly working at the most popular russian 
 online gaming station called "Tort.FM". It was developed for that project, eventually.
 
