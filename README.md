@@ -102,7 +102,7 @@ That' all. Now your API service will provide data from the live mount when it's 
 
 
 ## Getting an album art from gracenote for current track
-* Now, this API also allows you to show an album cover wherever you want. But, you have to do some steps in order to setup this feature.
+Now, this API also allows you to show an album cover wherever you want. But, you have to do some steps in order to setup this feature.
 * First, go to https://developer.gracenote.com/ and make yourself an account if dont have one.
 * After creating your application, gracenote will provide you with clientTag and clientID.
 * Add them to your config file and launch yourapihost.com/gracenote-php/register.php . 
