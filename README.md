@@ -104,7 +104,7 @@ Thanks to built-in memcached support your new api service has, quite literally, 
 
 Here are some tests result:
 
-Query: `ab -n 10000 -c 100 http://api.example.com:81/history/tort.fm/7/xml/`
+Query: `ab -n 10000 -c 100 http://api.example.com/live/track/xml/`
 
 ### Memcached ON
 ```
