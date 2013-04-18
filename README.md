@@ -19,6 +19,7 @@ It allows you to:
 * Show current track per mountpoint with timestamp.
 * Show last N tracks per mountpoiint alwo with their timestamps.
 * Show total number of current listeners online.
+* Show album art via GraceNote for current track.
 
 ## Install
 It's never been so easy if you're using composer.
@@ -99,6 +100,18 @@ Just bring the `icecast_mount_fallback_map` to the following state:
 ```
 That' all. Now your API service will provide data from the live mount when it's active or from the one it's associated with, if it's down.
 
+
+## Getting an album art from gracenote for current track
+*Now, this API also allows you to show an album cover wherever you want. But, you have to do some steps in order to setup this feature.
+*First, go to https://developer.gracenote.com/ and make yourself an account if dont have one.
+*After creating your application, gracenote will provide you with clientTag and clientID.
+*Add them to your config file and launch yourapihost.com/gracenote-php/register.php . 
+*If everything went OK, you should get your userID key. Save it to your config file.
+That's it. You can try requesting youapihost.com/album/Nickelback/Lullaby
+
+Dont forget to make storage folders writable.
+Also note, that when album cover image is pulled from gracenote' api for the first time, API then saves it on the filesystem, making subsequent request on same image much faster.
+
 ## Performance
 Thanks to built-in memcached support your new api service has, quite literally,  unrival performance.
 
@@ -170,6 +183,8 @@ Here you go:
 <http://api.tort.fm/radio/tort.fm/history/7/xml/>
 ### Total listeners, xml response:
 <http://api.tort.fm/radio/TotalListeners/xml/>
+### Album art, jpg response:
+<http://api.tort.fm/radio/album/Nickelback/Lullaby/>
 
 ## Extend
 If you want to add your custom functionality, just create additional methods in icecast_api.php file using this template:
