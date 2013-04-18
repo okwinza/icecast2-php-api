@@ -32,6 +32,8 @@ if(empty($active_mounts)){
     $app->halt(503, json_encode($response));
 }
 
+//some magic
+$app->response()->header("Access-Control-Allow-Origin", "*");
 
 //Number of listeners of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
