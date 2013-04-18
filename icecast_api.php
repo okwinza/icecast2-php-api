@@ -16,44 +16,72 @@ class IcecastApi {
 	private $config = array();
 	private $result = null;
 	private $_memcache = null;
+	private $_db = null;
 	private $icecast_xml = null;
 
 	function __construct(array $config){
 		
 		$this->config = $config;
-		$this->icecast_xml = $this->getDataFromIcecast();
-		if(empty($this->icecast_xml)) die('Failed to connect to Icecast Server.');
 		if($this->config['use_memcached']) $this->MemcachedInit();
+		if($this->config['use_db']) $this->GetDB();
+		$this->icecast_xml = $this->Request('getDataFromIcecast')->result;
+		if(empty($this->icecast_xml)) die('Failed to connect to Icecast Server.');
 
 	}
 	//Preparing response according to its type.
 	// @param (array) $type
-	// @returns xml or json
-	public function Response($type){
+	// @returns formatted xml/json or just "as is".
+	public function Response($type = null){
 		switch($type){
 			case 'xml':
 				return $this->array_to_xml($this->result);
-			break;
+				break;
 			case 'json':
 				return $this->array_to_json($this->result);
-			break;		
+				break;
+			default:
+				return $this->result;
+				break;
 		}
 	}
 	
-	public function Request($method,array $args){
+	
+	//main factory
+	public function Request($method, array $args = array(), $memcachedOverride = false){
 		
 		if(!empty($args['mount']) && !empty($this->config['icecast_mount_fallback_map'][$args['mount']])){
 			$args['mount'] = (!in_array($args['mount'],$this->listMounts(true))) ? $this->config['icecast_mount_fallback_map'][$args['mount']] : $args['mount'];		
 		}
 		
-		$this->result = ($this->config['use_memcached'] === true) ? $this->WithMemcached($method , $args) :  $this->{$method . 'Action'}($args);
+		$this->result = (($this->config['use_memcached'] === true) && ($memcachedOverride === false)) ? $this->WithMemcached($method , $args) :  $this->{$method . 'Action'}($args);
 		return $this;
 	}
+	
+	public function listMounts($only_active = false){
+		
+		$xml = simplexml_load_string($this->icecast_xml);
+		if($only_active){
+			$xml = $xml->xpath("/icestats/source[source_ip != '']/@mount");	
+		}else{
+			$xml = $xml->xpath("/icestats/source/@mount");	
+		}
+		// to array
+		$json = json_encode($xml);
+		$array = json_decode($json,TRUE);
+		
+		$list = array();
+		foreach($array as $key => $item){
+			$list[] = str_replace('/','',$item['@attributes']['mount']);
+		}
+		return $list;
+	}
+	
 	
 	//Memcached wrapper.
 	private function WithMemcached($method, array $args){
 		
-		$key = $method;
+		$key = $_SERVER['SERVER_NAME'].'_'.$method;
+		
 		foreach($args as $k => $val){
 			$key .= '_'.$val;
 		}
@@ -65,18 +93,10 @@ class IcecastApi {
 		}
 		
 		return $data;
-
 	}
 	
 	
-	
-	/* 
-	private function YourCustomMethodAction(array $args){
-	
-		return array('Hello' => 'Im a template for your custom methods.');
-	} 
-	*/
-	
+		
 	
 	/* 	
 	Getting number of listeners for given mountpoint
@@ -91,6 +111,7 @@ class IcecastApi {
 		$xml = simplexml_load_string($this->icecast_xml);
 		$xml = $xml->xpath("/icestats/source[@mount='/".$mount."']/listeners");
 		
+		//to array
 		$json = json_encode($xml);
 		$array = json_decode($json,TRUE);
 		
@@ -136,11 +157,11 @@ class IcecastApi {
 	*/
 	private function GetHistoryAction(array $args){
 		extract($args); // $mount, $amount
-		$amount = ($amount > $this->config['max_amount_of_history']) ? $this->config['max_amount_of_history'] : $amount;
+		$amount = ($amount > $this->config['max_amount_of_history']) ? $this->config['max_amount_of_history'] : $amount; // checking if number of requested songs is lower than max
 		
-		$grab_lines = intval($amount * pow(count($this->listMounts()),1.2)); // amount of lines to grab
+		$grab_lines = intval($amount * pow(count($this->listMounts()),1.2)); // amount of lines to work with
 		
-		$last_lines = $this->GetLastLinesFromFile($this->config['playlist_logfile'], $grab_lines);
+		$last_lines = $this->GetLastLinesFromFile($this->config['playlist_logfile'], $grab_lines); //gettins required number of lines from the logfile
 		$last_lines = explode("\n",$last_lines);
 		array_pop($last_lines); // deleting last empty line
 		$last_lines = array_reverse($last_lines); // desc. order
@@ -148,47 +169,104 @@ class IcecastApi {
 		$line_parsed = array();
 		$result_array = array();
 		$i = 0;
+		
 		foreach($last_lines as $key => $line){
 			$line_parsed = explode("|",$line);
+			/*
+			$line_parsed[0] - timestamp of the song, i.e. 							  14/Apr/2013:13:52:58 +0400
+			$line_parsed[1] - mountpoint of the song, i.e. 							  /trance
+			$line_parsed[2] - icecast's ID of the song(or something like that), i.e.  36
+			$line_parsed[3] - full title of the song, i.e. 							  Pakito - You Wanna Rock
+			*/
 			if($line_parsed[1] == "/".$mount){
+			
+				if(empty($line_parsed[3])) continue; //empty song title, skipping
+				
 				if($i < $amount){
-					$result_array[$i]['track'] 	 = $this->filter_string($line_parsed[3]); // getting rid of special chars in the title
-					$result_array[$i]['timestamp'] = strtotime($line_parsed[0]); 
+					$song_parts = explode("-",$line_parsed[3]); // exploding to artist and title
+					
+					$result_array[$i]['track'] = htmlspecialchars($line_parsed[3]); 
+					
+					$result_array[$i]['title'] = trim($song_parts[1]);  //only title, i.e. You Wanna Rock 
+					$result_array[$i]['artist'] = trim($song_parts[0]); //only artist, i.e. Pakito
+					
+					$result_array[$i]['timestamp'] = strtotime($line_parsed[0]); //unixtime
+					$result_array[$i]['album_art_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/album/'.urlencode($result_array[$i]['artist']).'/'.urlencode($result_array[$i]['title']);
+					
 					$i++;
 				}else break;
 			}
 		}
 		return $result_array;
-	}	
+	}
+	
+	
+	private function GetAlbumArtAction(array $args){
+		require_once('gracenote-php/Gracenote.class.php');
+		
+		if(!is_writable($this->config['album_art_folder'])){
+			die('album art folder is not writable.');
+		}
+		
+		$filename = $this->config['album_art_folder'] . md5($args['artist'] . $args['song']) . '.jpg';
+		if(file_exists($filename )){ //found in cache, returning.
+			return $filename;
+		}
+		
+		
+		if(!empty($this->config['gracenote']['userID'])){
+			$gracenote_api = new Gracenote\WebAPI\GracenoteWebAPI($this->config['gracenote']['clientID'], $this->config['gracenote']['clientTag'], $this->config['gracenote']['userID']);
+		}else{
+			die('Get your Gracenote userID via <a href="/gracenote-php/register.php">register.php</a> to continue.');
+		}
+		$result = array();
+		
+		//querying the GraceNote API
+		try
+		{	
+			$result = $gracenote_api->searchTrack($args['artist'], '',$args['song'], Gracenote\WebAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
+		}
+		catch( Exception $e )
+		{
+			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture
+		}
+		
+		$album_art = file_get_contents($result[0]['album_art_url']);
+		
+		if(touch($filename)){
+			file_put_contents($filename , $album_art);
+		}else{
+			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture;
+		}
+		
+		return $filename;
+	}
+	
+	
+	
+	
+	/* 
+	private function YourCustomMethodAction(array $args){
+	
+		return array('Hello' => 'Im a template for your custom methods.');
+	} 
+	*/
+
 	
 	private function MemcachedInit(){
 		$this->_memcache = new Memcache();
-		$this->_memcache->pconnect($this->config['memcached']['server'], $this->config['memcached']['port']);	
+		$this->_memcache->connect($this->config['memcached']['host'], $this->config['memcached']['port']);	
 	}
 	
-	public function listMounts($only_active = false){
-		
-		$xml = simplexml_load_string($this->icecast_xml);
-		if($only_active){
-			$xml = $xml->xpath("/icestats/source[source_ip != '']/@mount");	
-		}else{
-			$xml = $xml->xpath("/icestats/source/@mount");	
-		}
-		
-		$json = json_encode($xml);
-		$array = json_decode($json,TRUE);
-		
-		$list = array();
-		foreach($array as $key => $item){
-			$list[] = str_replace('/','',$item['@attributes']['mount']);
-		}
-		return $list;
-	}
-
+	private function GetDB(){
+		//setup your db interface here...
+		//$this->_db = your DB object.
+	}	
 	
 	
-	private function getDataFromIcecast(){
-		
+	
+	private function getDataFromIcecastAction(){
+	
 		$process = curl_init($this->config['icecast_server_hostname'].':'.$this->config['icecast_server_port'].'/admin/stats');
 
 		curl_setopt($process, CURLOPT_USERPWD, $this->config['icecast_admin_username'] . ":" . $this->config['icecast_admin_password']);
@@ -197,6 +275,7 @@ class IcecastApi {
 		
 		return curl_exec($process);		
 	}
+	
 	
 	private function array_to_xml(array $array, $xml=null){
 
@@ -247,11 +326,6 @@ class IcecastApi {
 		}
 		fclose ($fp);
 		return strrev(rtrim($read,"\n\r"));
-	}
-	
-	private function filter_string($string){
-		$search = array("'","&","@","\"");
-		return str_replace($search,"",$string);
 	}
 	
 	

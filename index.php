@@ -11,28 +11,7 @@
 define('IN_APP', true);
 require 'vendor/autoload.php';
 require 'icecast_api.php';
-
-//IceCast API Config
-$config = array(
-	'icecast_server_hostname' 		 => 'radio.example.com', //icecast2 server hostname or IP
-	'icecast_server_port'			 => 80, 
-	'icecast_admin_username' 		 => 'admin', //admin username
-	'icecast_admin_password' 		 => 'password', //admin password
-	//If you have an event based mounts(e.g. for live broadcasting), 
-	//you should configure fallback map below according to your icecast2 config file.
-	//Read the docs for more info.
-	'icecast_mount_fallback_map' => array('live' => 'nonstop',  // from => to
-									  'trance.live'  => 'trance.nonstop',
-									  'house.live'	=> 'house.nonstop'),
-	'playlist_logfile' 		 => '/var/log/icecast2/playlist.log', // must be available for reading
-	'use_memcached' 		 => true, // using of the memcached: true | false
-	'memcached' 			 => array('server' 		=> '127.0.0.1', 
-									  'port' 		=> 11211, 
-									  'lifetime' 	=> 10, // lifetime of the cache in seconds
-									  'compressed'  => 0), // compress data stored with memcached? 1 or 0. Requires zlib.
-	'max_amount_of_history'	 => '20', // max limit of requested items of playback history
-	'xmlrootnode'			 => 'response' // Root node name for the response using XML.
-);
+require 'config.php';
 
 //initiate Slim
 $app = new \Slim\Slim();
@@ -57,7 +36,7 @@ if(empty($active_mounts)){
 //Number of listeners of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
+$app->get('/:mount/listeners/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
 	
 	$app->response()->header("Content-Type", "application/".$responseType);	//setting appropriate headers
 	echo $icecastApi->Request('GetListeners',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -68,7 +47,7 @@ $app->get('/listeners/:mount/:responseType(/)', function ($mount,$responseType) 
 //Current track of specified mountpoint.
 //(string) :mount 		 => one of the existing mounts
 //(string) :responseType => response type(json|xml)
-$app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
+$app->get('/:mount/track/:responseType(/)', function ($mount,$responseType) use ($icecastApi, $app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetTrack',array('mount' => $mount))->Response($responseType); //returning response to the client
@@ -80,7 +59,7 @@ $app->get('/track/:mount/:responseType(/)', function ($mount,$responseType) use 
 //(string) :mount 	     => one of the existing mounts
 //(int)    :amount 		 => amount of tracks to retrieve
 //(string) :responseType => response type(json|xml)
-$app->get('/history/:mount/:amount/:responseType(/)', function ($mount,$amount,$responseType) use ($icecastApi, $app) {
+$app->get('/:mount/history/:amount/:responseType(/)', function ($mount,$amount,$responseType) use ($icecastApi, $app) {
 
 	$app->response()->header("Content-Type", "application/".$responseType); //setting appropriate headers
 	echo $icecastApi->Request('GetHistory',array('mount' => $mount , 'amount' => $amount))->Response($responseType); //returning response to the client
@@ -97,6 +76,24 @@ $app->get('/totalListeners/:responseType(/)', function ($responseType) use ($ice
 	
 })->conditions(array("responseType" => "(json|xml)"));
 
+
+
+//Album cover
+//(string) :artist
+//(string) :song
+$app->get('/album/:artist/:song(/)', function ($artist, $song) use ($icecastApi, $app) {
+
+
+	$img = $icecastApi->Request('GetAlbumArt',array('artist' => $artist, 'song' => $song), true)->Response(); //returning response to the client
+	$app->response()->header("Content-Type", "image/jpeg"); //setting appropriate headers
+	$app->response()->header("Content-Length", filesize($img));
+	
+	readfile($img);
+
+});
+
+ 
+ 
 
 
 
