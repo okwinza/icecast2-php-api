@@ -182,16 +182,16 @@ class IcecastApi {
 				if(empty($line_parsed[3])) continue; //empty song title, skipping
 				
 				if($i < $amount){
-					$song_parts = explode("-",$line_parsed[3]); // exploding to artist and title
+					$song_parts = explode("-",htmlspecialchars($line_parsed[3])); // exploding to artist and title
 					
 					$result_array[$i]['track'] = htmlspecialchars($line_parsed[3]); 
 					
-					$result_array[$i]['title'] = trim($song_parts[1]);  //only title, i.e. You Wanna Rock 
-					$result_array[$i]['artist'] = trim($song_parts[0]); //only artist, i.e. Pakito
+					$result_array[$i]['title']  = 		(!empty($song_parts[1])) ? trim($song_parts[1]) : 'Unknown Title';  //only title, i.e. You Wanna Rock 
+					$result_array[$i]['artist'] = 		(!empty($song_parts[0])) ? trim($song_parts[0]) : 'Unknown Artist'; //only artist, i.e. Pakito
 					
 					$result_array[$i]['timestamp'] = strtotime($line_parsed[0]); //unixtime
-					$result_array[$i]['album_art_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']).'/'.urlencode($result_array[$i]['title']);
-					$result_array[$i]['artist_image_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']);
+					$result_array[$i]['album_art_url'] = 		'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']).'/'.urlencode($result_array[$i]['title']);
+					$result_array[$i]['artist_image_url'] = 	'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']);
 					
 					$i++;
 				}else break;
@@ -208,8 +208,15 @@ class IcecastApi {
 			die('album art folder is not writable.');
 		}
 		
+		$default_img = $this->config['default_storage_folder'] . '404.jpg';
 		$filename = $this->config['album_art_folder'] . md5($args['artist'] . $args['song']) . '.jpg';
-		if(file_exists($filename )){ //found in cache, returning.
+		
+		if(file_exists($filename)){  //found in cache, returning.
+			
+			if(filesize($filename) == 0){
+				return $default_img;
+			}
+			
 			return $filename;
 		}
 		
@@ -228,7 +235,13 @@ class IcecastApi {
 		}
 		catch( Exception $e )
 		{
-			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture
+			return $default_img; // something went wrong, returning dummy picture
+		}
+		
+		if(empty($result[0]['album_art_url'])){
+			
+			touch($filename);	
+			return $default_img; // something went wrong, returning dummy picture
 		}
 		
 		$album_art = file_get_contents($result[0]['album_art_url']);
@@ -236,11 +249,13 @@ class IcecastApi {
 		if(touch($filename)){
 			file_put_contents($filename , $album_art);
 		}else{
-			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture;
+			return $default_img; // something went wrong, returning dummy picture;
 		}
 		
 		return $filename;
 	}
+
+
 	
 	private function GetArtistArtAction(array $args){
 		require_once('gracenote-php/Gracenote.class.php');
@@ -249,10 +264,18 @@ class IcecastApi {
 			die('artist art folder is not writable.');
 		}
 		
+		$default_img = $this->config['default_storage_folder'] . '404.jpg';
 		$filename = $this->config['artist_art_folder'] . md5($args['artist']) . '.jpg';
-		if(file_exists($filename )){ //found in cache, returning.
+		
+		if(file_exists($filename)){  //found in cache, returning.
+			
+			if(filesize($filename) == 0){
+				return $default_img;
+			}
+			
 			return $filename;
 		}
+		
 		
 		
 		if(!empty($this->config['gracenote']['userID'])){
@@ -269,16 +292,22 @@ class IcecastApi {
 		}
 		catch( Exception $e )
 		{
-			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture
+			return $default_img; // something went wrong, returning dummy picture
 		}
 		
-
+				
+		if(empty($result[0]['artist_image_url'])){	//empty response, probably wrong artist name. Caching.
+			
+			touch($filename);	
+			return $default_img;  // something went wrong, returning dummy picture	
+		}
+		
 		$artist_art = file_get_contents($result[0]['artist_image_url']);
 		
 		if(touch($filename)){
 			file_put_contents($filename , $artist_art);
 		}else{
-			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture;
+			return $default_img; // something went wrong, returning dummy picture;
 		}
 		
 		return $filename;
@@ -323,7 +352,7 @@ class IcecastApi {
 
         if ($xml == null)
         {
-            $xml = simplexml_load_string("<?xml version='1.0'?><". $this->config['xmlrootnode'] ."/>");
+            $xml = simplexml_load_string("<?xml version='1.0' encoding='UTF-8'?><". $this->config['xmlrootnode'] ."/>");
         }
   
         foreach($array as $key => $value)
@@ -332,7 +361,7 @@ class IcecastApi {
             {
 				$key = 'item';
             }
-        
+			$value = mb_convert_encoding($value, 'UTF-8');
             $key = preg_replace('/[^a-z]/i', '', $key);
             if (is_array($value))
             {
