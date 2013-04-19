@@ -35,12 +35,13 @@ $config = array(
 									 'password'		=> 'dbpassword'),			
 	'max_amount_of_history'	 => '20', // max limit of requested items of playback history
 	'xmlrootnode'			 => 'response', // Root node name for the response using XML.
-	'album_art_folder'		 => getcwd().'/dev.tort.fm/storage/albums/',   // cache folder for albums art images. With trailing slash. Normally, u shouldn't change this.
+	'album_art_folder'		 => getcwd().'/storage/albums/',   // cache folder for albums art images. With trailing slash. Normally, u shouldnt change this.
+	'artist_art_folder'		 => getcwd().'/storage/artists/',
 	'gracenote'				 => array('clientID' 	=> '',
 									  'clientTag' 	=> '',
 									  'userID' 		=> '',
 								),
-	'default_storage_folder' => getcwd().'/storage/default/', // default static folder. Normally, u shouldn't change this.
+	'default_storage_folder' => getcwd().'/storage/default/',
 );
 
 ?>

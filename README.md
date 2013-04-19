@@ -101,14 +101,14 @@ Just bring the `icecast_mount_fallback_map` to the following state:
 That' all. Now your API service will provide data from the live mount when it's active or from the one it's associated with, if it's down.
 
 
-## Getting an album art from gracenote for current track
+## Getting an album and artist art from Gracenote for your current track
 Now, this API also allows you to show an album cover wherever you want. But, you have to do some steps in order to setup this feature.
 * First, go to https://developer.gracenote.com/ and make yourself an account if dont have one.
 * After creating your application, gracenote will provide you with clientTag and clientID.
 * Add them to your config file and launch yourapihost.com/gracenote-php/register.php . 
 * If everything went OK, you should get your userID key. Save it to your config file.
 That's it. 
-For example, you can try requesting youapihost.com/album/Nickelback/Lullaby
+For example, you can try requesting youapihost.com/album/Nickelback/Lullaby for album image, and youapihost.com/album/Nickelback for artist image.
 
 Dont forget to make storage folders writable.
 Also note, that when album cover image is pulled from gracenote' api for the first time, API then saves it on the filesystem, making subsequent request on same image much faster.
@@ -186,6 +186,8 @@ Here you go:
 <http://api.tort.fm/radio/TotalListeners/xml/>
 ### Album art, jpg response:
 <http://api.tort.fm/radio/album/Nickelback/Lullaby/>
+### Artist art, jpg response:
+<http://api.tort.fm/radio/album/Nickelback/>
 
 ## Extend
 If you want to add your custom functionality, just create additional methods in icecast_api.php file using this template:

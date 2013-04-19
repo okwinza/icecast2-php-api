@@ -145,7 +145,6 @@ class IcecastApi {
 		extract($args); // $mount
 		
 		$data = $this->GetHistoryAction(array('mount'=> $mount,'amount'=>1)); //using already defined method.
-		
 		return $data;
 	}	
 	
@@ -183,7 +182,7 @@ class IcecastApi {
 				if(empty($line_parsed[3])) continue; //empty song title, skipping
 				
 				if($i < $amount){
-					$song_parts = explode("-",htmlspecialchars($line_parsed[3])); // exploding to artist and title
+					$song_parts = explode("-",$line_parsed[3]); // exploding to artist and title
 					
 					$result_array[$i]['track'] = htmlspecialchars($line_parsed[3]); 
 					
@@ -241,6 +240,48 @@ class IcecastApi {
 		
 		return $filename;
 	}
+	
+	private function GetArtistArtAction(array $args){
+		require_once('gracenote-php/Gracenote.class.php');
+		
+		if(!is_writable($this->config['artist_art_folder'])){
+			die('artist art folder is not writable.');
+		}
+		
+		$filename = $this->config['artist_art_folder'] . md5($args['artist']) . '.jpg';
+		if(file_exists($filename )){ //found in cache, returning.
+			return $filename;
+		}
+		
+		
+		if(!empty($this->config['gracenote']['userID'])){
+			$gracenote_api = new Gracenote\WebAPI\GracenoteWebAPI($this->config['gracenote']['clientID'], $this->config['gracenote']['clientTag'], $this->config['gracenote']['userID']);
+		}else{
+			die('Get your Gracenote userID via <a href="/gracenote-php/register.php">register.php</a> to continue.');
+		}
+		$result = array();
+		
+		//querying the GraceNote API
+		try
+		{	
+			$result = $gracenote_api->searchArtist($args['artist'], Gracenote\WebAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
+		}
+		catch( Exception $e )
+		{
+			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture
+		}
+		
+
+		$artist_art = file_get_contents($result[0]['artist_image_url']);
+		
+		if(touch($filename)){
+			file_put_contents($filename , $artist_art);
+		}else{
+			return $this->config['default_storage_folder'] . '404.jpg'; // something went wrong, returning dummy picture;
+		}
+		
+		return $filename;
+	}	
 	
 	
 	
