@@ -185,9 +185,9 @@ Here you go:
 ### Total listeners, xml response:
 <http://api.tort.fm/radio/TotalListeners/xml/>
 ### Album art, jpg response:
-<http://api.tort.fm/radio/album/Nickelback/Lullaby/>
+<http://api.tort.fm/radio/cover/Nickelback/Lullaby/>
 ### Artist art, jpg response:
-<http://api.tort.fm/radio/album/Nickelback/>
+<http://api.tort.fm/radio/cover/Nickelback/>
 
 ## Extend
 If you want to add your custom functionality, just create additional methods in icecast_api.php file using this template:
