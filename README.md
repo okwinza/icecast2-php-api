@@ -120,7 +120,7 @@ Here are some tests result:
 
 Query: `ab -n 10000 -c 100 http://api.example.com/radio/live/history/7/xml/
 
-### Memcached ON
+### Memcached OFF
 ```
 	Server Software:        nginx/0.7.67
 	
@@ -139,7 +139,7 @@ Query: `ab -n 10000 -c 100 http://api.example.com/radio/live/history/7/xml/
 	Time per request:       2.454 [ms] (mean, across all concurrent requests)
 	Transfer rate:          1009.97 [Kbytes/sec] received
 ```
-### Memcached OFF
+### Memcached ON
 ```
 	Server Software:        nginx/0.7.67
 	
