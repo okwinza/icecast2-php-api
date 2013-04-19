@@ -108,7 +108,7 @@ Now, this API also allows you to show an album cover wherever you want. But, you
 * Add them to your config file and launch yourapihost.com/gracenote-php/register.php . 
 * If everything went OK, you should get your userID key. Save it to your config file.
 That's it. 
-For example, you can try requesting youapihost.com/album/Nickelback/Lullaby for album image, and youapihost.com/album/Nickelback for artist image.
+For example, you can try requesting youapihost.com/cover/Nickelback/Lullaby for album image, and youapihost.com/cover/Nickelback for artist image.
 
 Dont forget to make storage folders writable.
 Also note, that when album cover image is pulled from gracenote' api for the first time, API then saves it on the filesystem, making subsequent request on same image much faster.

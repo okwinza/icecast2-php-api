@@ -79,7 +79,7 @@ $app->get('/totalListeners/:responseType(/)', function ($responseType) use ($ice
 
 
 
-$app->get('/album/:artist/:song(/)', function ($artist, $song) use ($icecastApi, $app) {
+$app->get('/cover/:artist/:song(/)', function ($artist, $song) use ($icecastApi, $app) {
 
 
 	$img = $icecastApi->Request('GetAlbumArt',array('artist' => $artist, 'song' => $song), true)->Response(); //returning response to the client
@@ -90,7 +90,7 @@ $app->get('/album/:artist/:song(/)', function ($artist, $song) use ($icecastApi,
 
 });
 
-$app->get('/album/:artist(/)', function ($artist) use ($icecastApi, $app) {
+$app->get('/cover/:artist(/)', function ($artist) use ($icecastApi, $app) {
 
 
 	$img = $icecastApi->Request('GetArtistArt',array('artist' => $artist), true)->Response(); //returning response to the client

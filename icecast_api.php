@@ -190,7 +190,8 @@ class IcecastApi {
 					$result_array[$i]['artist'] = trim($song_parts[0]); //only artist, i.e. Pakito
 					
 					$result_array[$i]['timestamp'] = strtotime($line_parsed[0]); //unixtime
-					$result_array[$i]['album_art_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/album/'.urlencode($result_array[$i]['artist']).'/'.urlencode($result_array[$i]['title']);
+					$result_array[$i]['album_art_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']).'/'.urlencode($result_array[$i]['title']);
+					$result_array[$i]['artist_image_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/cover/'.urlencode($result_array[$i]['artist']);
 					
 					$i++;
 				}else break;
