@@ -118,46 +118,46 @@ Thanks to built-in memcached support your new api service has, quite literally, 
 
 Here are some tests result:
 
-Query: `ab -n 10000 -c 100 http://api.example.com/live/track/xml/`
+Query: `ab -n 10000 -c 100 http://api.example.com/radio/live/history/7/xml/
 
 ### Memcached ON
 ```
 	Server Software:        nginx/0.7.67
 	
-	Document Path:          /live/track/xml/
+	Document Path:          /radio/live/history/7/xml/
 	Document Length:        697 bytes
 	
 	Concurrency Level:      100
-	Time taken for tests:   0.785 seconds
-	Complete requests:      1000
+	Time taken for tests:   24.540 seconds
+	Complete requests:      10000
 	Failed requests:        0
 	Write errors:           0
-	Total transferred:      463000 bytes
-	HTML transferred:       277000 bytes
-	Requests per second:    1274.19 [#/sec] (mean)
-	Time per request:       78.481 [ms] (mean)
-	Time per request:       0.785 [ms] (mean, across all concurrent requests)
-	Transfer rate:          576.12 [Kbytes/sec] received
+	Total transferred:      25380000 bytes
+	HTML transferred:       23410000 bytes
+	Requests per second:    407.49 [#/sec] (mean)
+	Time per request:       245.405 [ms] (mean)
+	Time per request:       2.454 [ms] (mean, across all concurrent requests)
+	Transfer rate:          1009.97 [Kbytes/sec] received
 ```
 ### Memcached OFF
 ```
 	Server Software:        nginx/0.7.67
 	
-	Document Path:          /live/track/xml/
+	Document Path:           /radio/live/history/7/xml/
 	Document Length:        682 bytes
 	
 
 	Concurrency Level:      100
-	Time taken for tests:   1.040 seconds
-	Complete requests:      1000
+	Time taken for tests:   6.134 seconds
+	Complete requests:      10000
 	Failed requests:        0
 	Write errors:           0
-	Total transferred:      439000 bytes
-	HTML transferred:       253000 bytes
-	Requests per second:    961.51 [#/sec] (mean)
-	Time per request:       104.003 [ms] (mean)
-	Time per request:       1.040 [ms] (mean, across all concurrent requests)
-	Transfer rate:          412.21 [Kbytes/sec] received
+	Total transferred:      25380000 bytes
+	HTML transferred:       23410000 bytes
+	Requests per second:    1630.16 [#/sec] (mean)
+	Time per request:       61.344 [ms] (mean)
+	Time per request:       0.613 [ms] (mean, across all concurrent requests)
+	Transfer rate:          4040.39 [Kbytes/sec] received
 ```
 
 All tests were made on the following server:
@@ -166,7 +166,7 @@ CPU	Intel Quad Xeon E3-1230 4 x 3.20 Ghz
 RAM	12 GB
 Web-server: nginx 0.7 with php5-fpm
 ```
-1274 RPS against 961.
+1630 RPS against 407.
 Not bad, huh? Whatcha think?
 
 
