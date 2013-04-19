@@ -183,7 +183,7 @@ class IcecastApi {
 				if(empty($line_parsed[3])) continue; //empty song title, skipping
 				
 				if($i < $amount){
-					$song_parts = explode("-",$line_parsed[3]); // exploding to artist and title
+					$song_parts = explode("-",htmlspecialchars($line_parsed[3])); // exploding to artist and title
 					
 					$result_array[$i]['track'] = htmlspecialchars($line_parsed[3]); 
 					
