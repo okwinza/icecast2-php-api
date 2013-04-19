@@ -361,7 +361,7 @@ class IcecastApi {
             {
 				$key = 'item';
             }
-			$value = mb_convert_encoding($value, 'UTF-8');
+			
             $key = preg_replace('/[^a-z]/i', '', $key);
             if (is_array($value))
             {
@@ -370,6 +370,7 @@ class IcecastApi {
             }
             else
             {
+				$value = mb_convert_encoding($value, 'UTF-8');
                 $xml->addChild($key,$value);
             }
         }
