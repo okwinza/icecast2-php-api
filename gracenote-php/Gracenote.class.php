@@ -43,7 +43,7 @@ class GracenoteWebAPI
         if ($clientID === null) { $clientID = $this->_clientID."-".$this->_clientTag; }
 
         // Make sure user doesn't try to register again if they already have a userID in the ctor.
-        if ($this->_userID !== null)
+        if ($this->_userID !== null && $this->_userID != '')
         {
             echo "Warning: You already have a userID, no need to register another. Using current ID.\n";
             return $this->_userID;
