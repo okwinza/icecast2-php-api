@@ -102,66 +102,6 @@ $app->get('/album/:artist(/)', function ($artist) use ($icecastApi, $app) {
 });
 
 
-$app->post('/event/listener/OnConnect(/)', function () use ($icecastApi, $app) {
-	
-	$post = $app->request()->post();
-	$data = '';
-	foreach($post as $key => $val){
-		$data .= $key.' : '.$val . PHP_EOL;	
-	}
-	file_put_contents('/var/www/home/dev.tort.fm/listener-c.txt',$data);
-	//echo $data;
-	
-	
-	if($icecastApi->Request('AuthListenerOnConnect',$app->request()->post())->Response()){
-		//$app->response()->header($config['icecast_listener_auth_header_title'], $config['icecast_listener_auth_header_value']);
-	}else{
-		//$app->response()->header("icecast-auth-message", $config['icecast_listener_auth_reject_reason']);
-	}
-	
-}); 
-
-
-$app->post('/event/listener/OnDisconnect(/)', function () use ($icecastApi, $app) {
-	
-	$post = $app->request()->post();
-	$data = '';
-	foreach($post as $key => $val){
-		$data .= $key.' : '.$val . PHP_EOL;	
-	}
-	file_put_contents('/var/www/home/dev.tort.fm/listener-dc.txt',$data);
-	
-	//$icecastApi->Request('ListenerOnDisconnect',$app->request()->post());
-	
-});
-
-$app->post('/event/source/OnConnect(/)', function () use ($icecastApi, $app) {
-	
-	$post = $app->request()->post();
-	$data = '';
-	foreach($post as $key => $val){
-		$data .= $key.' : '.$val . PHP_EOL;	
-	}
-	file_put_contents('/var/www/home/dev.tort.fm/source-c.txt',$data);
-	
-	//$icecastApi->Request('SourceOnConnect',$app->request()->post());
-	
-}); 
-
-$app->post('/event/source/OnDisconnect(/)', function () use ($icecastApi, $app) {
-	
-	$post = $app->request()->post();
-	$data = '';
-	foreach($post as $key => $val){
-		$data .= $key.' : '.$val . PHP_EOL;	
-	}
-	file_put_contents('/var/www/home/dev.tort.fm/source-dc.txt',$data);
-	
-	//$icecastApi->Request('SourceOnDisconnect',$app->request()->post());
-	
-}); 
-
- 
  
 
 
