@@ -169,6 +169,15 @@ Web-server: nginx 0.7 with php5-fpm
 1630 RPS against 407.
 Not bad, huh? Whatcha think?
 
+## Requirements
+To make everything run smoothly, you need to have the following software installed:
+
+* PHP 5.3 >=
+* cURL
+* libXML
+* (optional) memcached & memcache
+
+
 
 ## Demos
 So, the best demo is the working project, right?
