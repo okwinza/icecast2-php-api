@@ -246,7 +246,7 @@ class IcecastApi {
 		
 		$album_art = file_get_contents($result[0]['album_art_url']);
 		
-		if(touch($filename) && file_put_contents($filename , $artist_art)){ //attempt to create a cache image
+		if(touch($filename) && file_put_contents($filename , $album_art)){ //attempt to create a cache image
 			return $filename; // everything is ok
 		}else{
 			return $default_img; // something went wrong, returning dummy picture;
