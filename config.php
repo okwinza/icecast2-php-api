@@ -20,6 +20,8 @@ $config = array(
 									  'house'	=> 'house.nonstop'),
 									  
 	'playlist_logfile' 		 => '/var/log/icecast2/playlist.log', // must be available for reading
+	'fix_non_utf8_encoding'  => true,			//if set to true, the system will try to convert all non-UTF characters into proper string.
+	'mp3_title_charset'		 => 'cp1251',		//If you have any songs metadata which contains non-UTF symbols(like cyrillic titles, etc) set this to your local charset value (cp1251 for cyrillic).
 	
 	'use_memcached' 		 => false, // Enable memcached support: true | false
 	'use_db'				 => false, // Enable db support: true | false  (unused atm)
