@@ -182,6 +182,11 @@ class IcecastApi {
 				if(empty($line_parsed[3])) continue; //empty song title, skipping
 				
 				if($i < $amount){
+					
+					if($this->config['fix_non_utf8_encoding'] == true){
+						$line_parsed[3] = mb_convert_encoding($line_parsed[3],'UTF-8',$this->config['mp3_title_charset']);
+					}
+					
 					$song_parts = explode("-",htmlspecialchars($line_parsed[3])); // exploding to artist and title
 					
 					$result_array[$i]['track'] = htmlspecialchars($line_parsed[3]); 
