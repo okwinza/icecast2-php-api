@@ -190,7 +190,7 @@ Here you go:
 ### Current track from tort.fm main mountpoint, json response:
 <http://api.tort.fm/radio/tort.fm/song/json/>
 ### Last 7 tracks from our trance channel, xml response:
-<http://api.tort.fm/radio/tort.fm/history/7/xml/>
+<http://api.tort.fm/radio/trance/history/7/xml/>
 ### Total listeners, xml response:
 <http://api.tort.fm/radio/TotalListeners/xml/>
 ### Album art, jpg response:
