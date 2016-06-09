@@ -1,4 +1,4 @@
-<?
+<?php
 //IceCast API Config
 $config = array(
 	'icecast_server_hostname' 		 => 'radio.example.com', //icecast2 server hostname or IP
