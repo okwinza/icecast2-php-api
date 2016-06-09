@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 /* @package IceCast2 PHP API
 /* http://github.com/okwinza/icecast2-php-api
