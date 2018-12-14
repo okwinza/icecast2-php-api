@@ -1,5 +1,7 @@
 # IceCast2 PHP API
 
+## Warning: This project is EOL, outdated and has been abandoned. Use it at your own risk.
+
 ## Overview
 This is fully functional, easy-to-use, RESTful API interface for your icecast2-based radio station.
 It's based on a popular Slim Framework which makes it very flexible and reliable solution.
